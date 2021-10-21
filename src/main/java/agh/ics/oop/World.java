@@ -7,12 +7,14 @@ public class World {
         Vector2d position2 = new Vector2d(-2,1);
         System.out.println(position2);
         System.out.println(position1.add(position2));
+
+        run(args_to_enum(args));
     }
 
-    public static void run(Direction[] dirs) {
+    public static void run(MoveDirection[] dirs) {
         System.out.print("Zwierzak sobie biegnie ");
 
-        for(Direction dir : dirs) {
+        for(MoveDirection dir : dirs) {
             String message = switch (dir) {
                 case FORWARD -> "do przodu";
                 case BACKWARD -> "do tyłu";
@@ -25,18 +27,12 @@ public class World {
 
         System.out.print("zatrzymuje się. ");
     }
-    public static Direction[] args_to_enum(String[] args){
-        Direction[] dirList;
-        dirList =  new Direction[args.length];
+    public static MoveDirection[] args_to_enum(String[] args){
+        MoveDirection[] dirList;
+        dirList =  new MoveDirection[args.length];
 
         for(int i=0; i <args.length; i++) {
-            dirList[i] = switch (args[i]) {
-                case "f" -> Direction.FORWARD;
-                case "b" -> Direction.BACKWARD;
-                case "r" -> Direction.RIGHT;
-                case "l" -> Direction.LEFT;
-                default -> null;
-            };
+            dirList[i] = MoveDirection.fromString(args[i]);
         }
         return dirList;
     }
