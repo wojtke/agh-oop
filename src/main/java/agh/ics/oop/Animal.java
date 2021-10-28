@@ -1,12 +1,20 @@
 package agh.ics.oop;
 
 public class Animal {
-    public MapDirection ori;
-    public Vector2d pos;
+    private MapDirection ori;
+    private Vector2d pos;
 
     public Animal(){
         this.ori = MapDirection.NORTH;
         this.pos = new Vector2d(2, 2);
+    }
+
+    public MapDirection getOri() {
+        return ori;
+    }
+
+    public Vector2d getPos() {
+        return pos;
     }
 
     public String toString(){

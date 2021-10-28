@@ -18,7 +18,7 @@ public class AnimalMoveTest {
         MapDirection outcome = MapDirection.SOUTH;
 
         for (MoveDirection dir: directions) animal.move(dir);
-        assertTrue(animal.ori == outcome);
+        assertTrue(animal.getOri() == outcome);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class AnimalMoveTest {
         MapDirection outcome = MapDirection.NORTH;
 
         for (MoveDirection dir: directions) animal.move(dir);
-        assertTrue(animal.ori == outcome);
+        assertTrue(animal.getOri() == outcome);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class AnimalMoveTest {
         Vector2d outcome = new Vector2d(2,0);
 
         for (MoveDirection dir: directions) animal.move(dir);
-        assertTrue(animal.pos.equals(outcome));
+        assertTrue(animal.getPos().equals(outcome));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class AnimalMoveTest {
         Vector2d outcome = new Vector2d(3,4);
 
         for (MoveDirection dir: directions) animal.move(dir);
-        assertTrue(animal.pos.equals(outcome));
+        assertTrue(animal.getPos().equals(outcome));
     }
 
     @Test
@@ -75,8 +75,8 @@ public class AnimalMoveTest {
         Animal animal = new Animal();
         for (int i=0; i<20; i++) animal.move(MoveDirection.FORWARD);
 
-        assertTrue( animal.pos.precedes(new Vector2d(4, 4))
-                && animal.pos.follows(new Vector2d(0, 0)) );
+        assertTrue( animal.getPos().precedes(new Vector2d(4, 4))
+                && animal.getPos().follows(new Vector2d(0, 0)) );
     }
 
     @Test
@@ -89,8 +89,8 @@ public class AnimalMoveTest {
             animal.move(MoveDirection.LEFT);
         }
 
-        assertTrue( animal.pos.precedes(new Vector2d(4, 4))
-                && animal.pos.follows(new Vector2d(0, 0)) );
+        assertTrue( animal.getPos().precedes(new Vector2d(4, 4))
+                && animal.getPos().follows(new Vector2d(0, 0)) );
     }
 
     @Test
