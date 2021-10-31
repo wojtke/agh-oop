@@ -3,22 +3,32 @@ package agh.ics.oop;
 public class Animal {
     private MapDirection ori;
     private Vector2d pos;
+    private final IWorldMap map;
 
     public Animal(){
         this.ori = MapDirection.NORTH;
-        this.pos = new Vector2d(2, 2);
+        this.pos = new Vector2d(2,2);
+        this.map = new RectangularMap(5, 5);
     }
 
-    public MapDirection getOri() {
-        return ori;
+    public Animal(IWorldMap map, Vector2d initialPosition){
+        this.map = map;
+        this.ori = MapDirection.NORTH;
+        this.pos = initialPosition;
+
+        map.place(this);
     }
 
-    public Vector2d getPos() {
-        return pos;
-    }
+    public MapDirection getOrientation() { return ori; }
+    public Vector2d getPosition() { return pos; }
 
-    public String toString(){
-        return this.ori.toString() + ", " + this.pos;
+    public String toString() {
+        return switch (this.ori) {
+            case NORTH -> "^";
+            case EAST -> ">";
+            case SOUTH -> "v";
+            case WEST -> "<";
+        };
     }
 
     public void move(MoveDirection direction){
@@ -27,13 +37,15 @@ public class Animal {
             case RIGHT -> this.ori = this.ori.next();
             case FORWARD -> {
                 Vector2d new_pos = this.pos.add(this.ori.toUnitVector());
-                if (new_pos.precedes(new Vector2d(4, 4)) && new_pos.follows(new Vector2d(0, 0))) {
+                if (this.map.canMoveTo(new_pos)){
+                    this.map.move(this.pos, new_pos);
                     this.pos = new_pos;
                 }
             }
             case BACKWARD -> {
                 Vector2d new_pos = this.pos.subtract(this.ori.toUnitVector());
-                if (new_pos.precedes(new Vector2d(4, 4)) && new_pos.follows(new Vector2d(0, 0))) {
+                if (this.map.canMoveTo(new_pos)){
+                    this.map.move(this.pos, new_pos);
                     this.pos = new_pos;
                 }
             }
