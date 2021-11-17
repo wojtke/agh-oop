@@ -1,31 +1,28 @@
 package agh.ics.oop;
 
+import java.util.ArrayList;
+
 public class SimulationEngine implements IEngine {
     private final IWorldMap map;
     private final MoveDirection[] moves;
-    private final Animal[] animals;
+    private final ArrayList<Animal> animals;
 
     public SimulationEngine(MoveDirection[] moves, IWorldMap map, Vector2d[] startingPositions){
         this.map = map;
         this.moves = moves;
-        this.animals = new Animal[startingPositions.length];
+        this.animals = new ArrayList<>();
 
-
-        for (int i=0; i<startingPositions.length; i++){
-            animals[i] = new Animal(map, startingPositions[i]);
+        for (Vector2d pos: startingPositions){
+            Animal animal = new Animal(map, pos);
+            if (map.place(animal)) {
+                animals.add(animal);
+            }
         }
     }
 
     public void run(){
         for (int i=0; i<moves.length; i++) {
-            animals[i % animals.length].move(moves[i]);
-        }
-    }
-    public void runPrintSteps(){
-        for (int i=0; i<moves.length; i++){
-            animals[i%animals.length].move(moves[i]);
-            System.out.println("Animal: " + i%animals.length + ", move: " + moves[i]);
-            System.out.println(map);
+            animals.get(i % animals.size()).move(moves[i]);
         }
     }
 }

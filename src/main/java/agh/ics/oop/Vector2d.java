@@ -1,6 +1,8 @@
 package agh.ics.oop;
 
 import java.lang.Math;
+import java.util.Objects;
+
 public class Vector2d {
     public final int x, y;
 
@@ -9,6 +11,7 @@ public class Vector2d {
         this.y = y;
     }
 
+    @Override
     public String toString(){
         return "(" + this.x + ", " + this.y + ")";
     }
@@ -37,6 +40,7 @@ public class Vector2d {
         return new Vector2d(this.x - other.x, this.y - other.y);
     }
 
+    @Override
     public boolean equals(Object other){
         if (this == other)
             return true;
@@ -44,6 +48,11 @@ public class Vector2d {
             return false;
         Vector2d that = (Vector2d) other;
         return (this.x==that.x && this.y==that.y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.x, this.y);
     }
 
     public Vector2d opposite(){

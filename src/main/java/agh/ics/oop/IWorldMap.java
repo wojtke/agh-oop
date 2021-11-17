@@ -45,15 +45,4 @@ public interface IWorldMap {
      * @return Object or null if the position is not occupied.
      */
     Object objectAt(Vector2d position);
-
-    /**
-     * Move object from old position to new position
-     *
-     * @param old_position
-     *          Old position of the object.
-     * @param new_position
-     *          New position of the object.
-     * @return True if moved successfully
-     */
-    boolean move(Vector2d old_position, Vector2d new_position);
 }
