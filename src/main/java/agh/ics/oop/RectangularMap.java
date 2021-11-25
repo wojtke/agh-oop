@@ -1,6 +1,6 @@
 package agh.ics.oop;
 
-public class RectangularMap extends AbstractWorldMap implements IWorldMap {
+public class RectangularMap extends AbstractWorldMap {
     private final Vector2d lowerLeftBound, upperRightBound;
 
     public RectangularMap(int width, int height) {
@@ -18,10 +18,5 @@ public class RectangularMap extends AbstractWorldMap implements IWorldMap {
         return (position.follows(lowerLeftBound)
                 && position.precedes(upperRightBound)
                 && !isOccupied(position));
-    }
-
-    @Override
-    public boolean place(Animal animal) {
-        return super.place(animal);
     }
 }

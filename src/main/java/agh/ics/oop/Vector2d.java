@@ -25,10 +25,12 @@ public class Vector2d {
     }
 
     public Vector2d upperRight(Vector2d other){
+        if (other == null) return this;
         return new Vector2d( Math.max(this.x, other.x), Math.max(this.y, other.y) );
     }
 
     public Vector2d lowerLeft(Vector2d other){
+        if (other == null) return this;
         return new Vector2d( Math.min(this.x, other.x), Math.min(this.y, other.y) );
     }
 
