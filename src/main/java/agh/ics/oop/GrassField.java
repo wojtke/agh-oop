@@ -1,46 +1,61 @@
 package agh.ics.oop;
 
-import java.util.HashMap;
-
 public class GrassField extends AbstractWorldMap {
-    protected final HashMap<Vector2d, Grass> grassMap;
+    protected final MapBoundary mapBoundary;
+    private final int randomMax;
 
     public GrassField(int n) {
         super();
-        grassMap = new HashMap<>();
 
-        int randomMax = (int) Math.sqrt(n*10);
-        while (n > 0) {
-            Vector2d randomPosition = new Vector2d( (int) (Math.random()*randomMax), (int) (Math.random()*randomMax));
-            if (placeGrass(randomPosition)) n--;
+        mapBoundary = new MapBoundary();
+        randomMax = (int) Math.sqrt(n*10);
+
+        for (int i = 0; i < n; i++) {
+            placeGrass();
         }
     }
 
     @Override
     protected Vector2d[] getDrawBoundaries() {
-        Vector2d[] boundaries = {null, null};
-        for (Vector2d position : animalMap.keySet()) {
-            boundaries[0] = boundaries[0].lowerLeft(position);
-            boundaries[1] = boundaries[1].upperRight(position);
+        return mapBoundary.getBoundaries();
+    }
+
+    @Override
+    public boolean place(Animal animal) throws IllegalArgumentException {
+        Vector2d position = animal.getPosition();
+        if (objectAt(position) instanceof Grass) {
+            placeGrass();
+        } else if (objectAt(position) instanceof Animal) {
+            throw new IllegalArgumentException("Cannot place animal at" + position);
         }
-        return boundaries;
+
+        mapBoundary.place(animal);
+        animal.addObserver(mapBoundary);
+
+        mapElements.put(position, animal);
+        animal.addObserver(this);
+        return true;
+    }
+
+    public void placeGrass() {
+        for (int i = 0; i < 100; i++) {
+            Vector2d randomPosition = new Vector2d( (int) (Math.random()*randomMax), (int) (Math.random()*randomMax));
+            if (objectAt(randomPosition) == null) {
+                Grass grass = new Grass(randomPosition);
+                mapElements.put(randomPosition, grass);
+                mapBoundary.place(grass);
+                return;
+            }
+        }
+        throw new IllegalStateException("No free space for grass");
     }
 
     @Override
-    public Object objectAt(Vector2d position) {
-        if (animalMap.get(position) != null) return animalMap.get(position);
-        else return grassMap.get(position);
-    }
-
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return !(objectAt(position) instanceof Animal);
-    }
-
-    public boolean placeGrass(Vector2d position) {
-        if (objectAt(position) == null) {
-            grassMap.put(position, new Grass(position));
-            return true;
-        } else return false;
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        if (objectAt(oldPosition) instanceof Animal && objectAt(newPosition) instanceof Grass) {
+            placeGrass();
+        }
+        mapElements.put(newPosition, (IMapElement) objectAt(oldPosition));
+        mapElements.remove(oldPosition);
     }
 }

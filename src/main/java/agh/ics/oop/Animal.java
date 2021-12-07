@@ -8,12 +8,6 @@ public class Animal implements IMapElement{
     private final IWorldMap map;
     private final ArrayList<IPositionChangeObserver> observers;
 
-    public Animal(){
-        this.ori = MapDirection.NORTH;
-        this.pos = new Vector2d(2,2);
-        this.map = new RectangularMap(5, 5);
-        this.observers = new ArrayList<>();
-    }
 
     public Animal(IWorldMap map, Vector2d initialPosition){
         this.map = map;
@@ -64,9 +58,10 @@ public class Animal implements IMapElement{
     public void removeObserver(IPositionChangeObserver observer){
         observers.remove(observer);
     }
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
+    private void positionChanged(Vector2d oldPosition, Vector2d newPosition){
         for (IPositionChangeObserver observer : observers) {
             observer.positionChanged(oldPosition, newPosition);
         }
     }
+
 }

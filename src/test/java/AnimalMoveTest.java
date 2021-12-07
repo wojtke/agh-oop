@@ -3,12 +3,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnimalMoveTest {
     @Test
     public void orientationTest1() {
-        Animal animal = new Animal();
+        Animal animal = new Animal(new RectangularMap(5, 5), new Vector2d(2,2));
 
         MoveDirection[] directions = {
                 MoveDirection.RIGHT,
@@ -23,7 +24,7 @@ public class AnimalMoveTest {
 
     @Test
     public void orientationTest2() {
-        Animal animal = new Animal();
+        Animal animal = new Animal(new RectangularMap(5, 5), new Vector2d(2,2));
 
         MoveDirection[] directions = {
                 MoveDirection.RIGHT,
@@ -41,7 +42,7 @@ public class AnimalMoveTest {
 
     @Test
     public void positionTest1() {
-        Animal animal = new Animal();
+        Animal animal = new Animal(new RectangularMap(5, 5), new Vector2d(2,2));
 
         MoveDirection[] directions = {
                 MoveDirection.BACKWARD,
@@ -55,7 +56,7 @@ public class AnimalMoveTest {
 
     @Test
     public void positionTest2() {
-        Animal animal = new Animal();
+        Animal animal = new Animal(new RectangularMap(5, 5), new Vector2d(2,2));
 
         MoveDirection[] directions = {
                 MoveDirection.FORWARD,
@@ -72,7 +73,7 @@ public class AnimalMoveTest {
 
     @Test
     public void mapBoundaryTest1() {
-        Animal animal = new Animal();
+        Animal animal = new Animal(new RectangularMap(5, 5), new Vector2d(2,2));
         for (int i=0; i<20; i++) animal.move(MoveDirection.FORWARD);
 
         assertTrue( animal.getPosition().precedes(new Vector2d(4, 4))
@@ -81,7 +82,7 @@ public class AnimalMoveTest {
 
     @Test
     public void mapBoundaryTest2() {
-        Animal animal = new Animal();
+        Animal animal = new Animal(new RectangularMap(5, 5), new Vector2d(2,2));
         for (int i=0; i<10; i++) {
             animal.move(MoveDirection.BACKWARD);
             animal.move(MoveDirection.RIGHT);
@@ -109,7 +110,7 @@ public class AnimalMoveTest {
 
     @Test
     public void parseTest2() {
-        String[] args = {"r", "e", "heh", "f"};
+        String[] args = {"r", "f"};
         MoveDirection[] directions = {
                 MoveDirection.RIGHT,
                 MoveDirection.FORWARD,
@@ -118,5 +119,13 @@ public class AnimalMoveTest {
         assertTrue(Arrays.equals( OptionsParser.parse(args), directions));
     }
 
+    @Test
+    public void parseTest3() {
+        String[] args = {"r", "u"};
+        assertThrows(IllegalArgumentException.class, () -> OptionsParser.parse(args));
+
+        String[] args2 = {"r", "f", "ffff", "f"};
+        assertThrows(IllegalArgumentException.class, () -> OptionsParser.parse(args2));
+    }
 
 }

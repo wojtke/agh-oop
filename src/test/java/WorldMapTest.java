@@ -1,8 +1,7 @@
 import agh.ics.oop.*;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WorldMapTest {
 
@@ -20,7 +19,7 @@ public class WorldMapTest {
 
         // place at occupied position
         Animal other_animal = new Animal(map, position);
-        assertFalse(map.place(other_animal));
+        assertThrows(IllegalArgumentException.class, () -> map.place(other_animal));
 
         assertTrue(map.objectAt(position).equals(animal));
     }
@@ -39,7 +38,7 @@ public class WorldMapTest {
 
         // place at occupied position
         Animal other_animal = new Animal(map, position);
-        assertFalse(map.place(other_animal));
+        assertThrows(IllegalArgumentException.class, () -> map.place(other_animal));
 
         assertTrue(map.objectAt(position).equals(animal));
 
@@ -107,11 +106,18 @@ public class WorldMapTest {
         assertTrue(map.isOccupied(grassPosition));
         assertTrue(map.objectAt(grassPosition).equals(animal));
 
-        //after moving the animal, position should be back to grass
-        animal.move(MoveDirection.FORWARD);
-        assertTrue(map.isOccupied(grassPosition));
-        assertTrue(map.objectAt(grassPosition) instanceof Grass);
-        assertTrue(map.canMoveTo(grassPosition));
+        //look for grass
+        grasscount = 0;
+        grassPosition = null;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++){
+                if (map.objectAt(new Vector2d(i, j)) instanceof Grass) {
+                    grasscount++;
+                    grassPosition = new Vector2d(i, j);
+                }
+            }
+        }
+        assertTrue(grasscount == 1);
     }
 
 }
