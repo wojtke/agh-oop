@@ -1,5 +1,9 @@
 package agh.ics.oop;
 
+import javafx.scene.image.Image;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class Animal implements IMapElement{
@@ -7,7 +11,6 @@ public class Animal implements IMapElement{
     private Vector2d pos;
     private final IWorldMap map;
     private final ArrayList<IPositionChangeObserver> observers;
-
 
     public Animal(IWorldMap map, Vector2d initialPosition){
         this.map = map;
@@ -50,6 +53,17 @@ public class Animal implements IMapElement{
                 }
             }
         }
+    }
+
+    @Override
+    public Image getImage() throws FileNotFoundException {
+        return new Image(new FileInputStream("src/main/resources/" +
+                switch (this.ori) {
+                    case NORTH -> "up.jpg";
+                    case EAST -> "right.jpg";
+                    case SOUTH -> "down.jpg";
+                    case WEST -> "left.jpg";
+                }));
     }
 
     public void addObserver(IPositionChangeObserver observer){

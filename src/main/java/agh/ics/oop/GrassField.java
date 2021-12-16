@@ -16,7 +16,7 @@ public class GrassField extends AbstractWorldMap {
     }
 
     @Override
-    protected Vector2d[] getDrawBoundaries() {
+    public Vector2d[] getDrawBoundaries() {
         return mapBoundary.getBoundaries();
     }
 
