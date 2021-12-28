@@ -2,101 +2,53 @@ package agh.ics.oop;
 
 import java.util.ArrayList;
 
-public class SimulationEngine implements Runnable{
-    private final Map map;
+public class SimulationEngine implements IEngine, Runnable {
+    private final IWorldMap map;
+    private MoveDirection[] moves = {};
     private final ArrayList<Animal> animals;
-    private final ArrayList<IObserver> observers = new ArrayList<>();
+    private final ArrayList<IGenericObserver> observers = new ArrayList<>();
 
-    private final AnimalsOnMapController animalsOnMapController;
-    private final Stats stats;
-    private int simulationSpeed = 200;
-
-    public SimulationEngine(
-            int map_width,
-            int map_height,
-            int jungle_width,
-            int jungle_height,
-            int starting_animals,
-            int starting_plants,
-            int starting_energy,
-            int move_energy,
-            int plant_energy
-    ) {
-
-        this.map = new Map(
-                map_width,
-                map_height,
-                jungle_width,
-                jungle_height
-        );
-
+    public SimulationEngine(IWorldMap map, Vector2d[] startingPositions){
+        this.map = map;
         this.animals = new ArrayList<>();
 
-        for (int i = 0; i < starting_animals; i++) {
-            Animal animal = new Animal(
-                    map.getRandomUnoccupiedPosition("map"),
-                    Direction.random(),
-                    starting_energy,
-                    new Genom()
-            );
-
-            map.putAnimal(animal, animal.getPosition());
-            animals.add(animal);
-        }
-        for (int i = 0; i < starting_plants/2; i++) {
-            this.map.growGrass();
-        }
-
-        this.animalsOnMapController = new AnimalsOnMapController(this.map, this.animals, starting_energy, move_energy, plant_energy);
-        this.stats = new Stats(map, animals);
-
-    }
-
-    public void run(){
-        try {
-            int epoch = 0;
-            while (true) {
-
-                animalsOnMapController.move();
-                animalsOnMapController.eat();
-                animalsOnMapController.reproduce();
-                animalsOnMapController.removeDead();
-
-                map.growGrass();
-
-                stats.update(epoch);
-                epoch++;
-
-                updateObservers();
-
-                Thread.sleep(this.simulationSpeed);
+        for (Vector2d pos: startingPositions){
+            Animal animal = new Animal(map, pos);
+            if (map.place(animal)) {
+                animals.add(animal);
             }
-
-        }  catch (InterruptedException e) {
-            System.out.println("Simulation interrupted: " + e.getMessage());
         }
     }
 
-    public void addObserver(IObserver observer) {
+    public SimulationEngine(MoveDirection[] moves, IWorldMap map, Vector2d[] startingPositions){
+        this(map, startingPositions);
+        this.moves = moves;
+    }
+
+    public void setMoves(MoveDirection[] moves) {
+        this.moves = moves;
+    }
+
+    public void addObserver(IGenericObserver observer) {
         this.observers.add(observer);
     }
 
     private void updateObservers() {
-        for (IObserver observer: this.observers) {
+        for (IGenericObserver observer: this.observers) {
             observer.update();
         }
     }
 
-    public Map getMap() {
-        return this.map;
-    }
+    public void run(){
+        try {
+            for (int i=0; i<moves.length; i++) {
+                animals.get(i % animals.size()).move(moves[i]);
+                updateObservers();
+                Thread.sleep(300);
+            }
 
-    public Stats getStats() {
-        return this.stats;
+        }  catch (InterruptedException e) {
+            System.out.println("Interrupted: " + e.getMessage());
+        }
     }
-
-    public void setSimulationSpeed(int speed) {
-        this.simulationSpeed = speed;
-    }
-
 }

@@ -1,6 +1,10 @@
 package agh.ics.oop;
+import javafx.scene.image.Image;
+
+import java.io.FileNotFoundException;
 
 public interface IMapElement {
-    public Vector2d getPosition();
-    public String toString();
+    String toString();
+    Vector2d getPosition();
+    Image getImage() throws FileNotFoundException;
 }

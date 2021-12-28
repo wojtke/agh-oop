@@ -1,63 +1,81 @@
 package agh.ics.oop;
 
-public class Animal implements IMapElement{
-    private Vector2d position;
-    private Direction direction;
-    private int energy;
-    private final Genom genom;
+import javafx.scene.image.Image;
 
-    public Animal(Vector2d position, Direction direction, int energy, Genom genom){
-        this.position = position;
-        this.direction = direction;
-        this.energy = energy;
-        this.genom = genom;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
+public class Animal implements IMapElement{
+    private MapDirection ori;
+    private Vector2d pos;
+    private final IWorldMap map;
+    private final ArrayList<IPositionChangeObserver> observers;
+
+    public Animal(IWorldMap map, Vector2d initialPosition){
+        this.map = map;
+        this.ori = MapDirection.NORTH;
+        this.pos = initialPosition;
+        this.observers = new ArrayList<>();
     }
 
-    public Vector2d getNextMove() {
-        int move = genom.random();
+    public MapDirection getOrientation() { return ori; }
 
-        if(move == 0){
-            return position.add(direction.toUnitVector());
-        } else if(move == 4){
-            return position.subtract(direction.toUnitVector());
-        } else {
-            this.direction = direction.rotate(move);
-            return null;
+    @Override
+    public Vector2d getPosition() { return pos; }
+
+    @Override
+    public String toString() {
+        return switch (this.ori) {
+            case NORTH -> "^";
+            case EAST -> ">";
+            case SOUTH -> "v";
+            case WEST -> "<";
+        };
+    }
+
+    public void move(MoveDirection direction){
+        switch (direction) {
+            case LEFT -> this.ori = this.ori.previous();
+            case RIGHT -> this.ori = this.ori.next();
+            case FORWARD -> {
+                Vector2d new_pos = this.pos.add(this.ori.toUnitVector());
+                if (this.map.canMoveTo(new_pos)){
+                    this.positionChanged(this.pos, new_pos);
+                    this.pos = new_pos;
+                }
+            }
+            case BACKWARD -> {
+                Vector2d new_pos = this.pos.subtract(this.ori.toUnitVector());
+                if (this.map.canMoveTo(new_pos)){
+                    this.positionChanged(this.pos, new_pos);
+                    this.pos = new_pos;
+                }
+            }
         }
     }
 
-    public void move(Vector2d new_position){
-        this.position = new_position;
+    @Override
+    public Image getImage() throws FileNotFoundException {
+        return new Image(new FileInputStream("src/main/resources/" +
+                switch (this.ori) {
+                    case NORTH -> "up.jpg";
+                    case EAST -> "right.jpg";
+                    case SOUTH -> "down.jpg";
+                    case WEST -> "left.jpg";
+                }));
     }
 
-    public Animal reproduce(Animal other){
-        double energy_ratio = (double)this.energy/other.energy;
-        Genom child_genom = this.genom.cross(other.genom, energy_ratio);
-
-        int child_energy = ((int) ((double)this.energy*0.25)) + ((int) ((double)other.energy*0.25));
-        this.energy -= (int) ((double)this.energy*0.25);
-        other.energy -= (int) ((double)other.energy*0.25);
-
-        return new Animal(this.position, Direction.random(), child_energy, child_genom);
+    public void addObserver(IPositionChangeObserver observer){
+        observers.add(observer);
+    }
+    public void removeObserver(IPositionChangeObserver observer){
+        observers.remove(observer);
+    }
+    private void positionChanged(Vector2d oldPosition, Vector2d newPosition){
+        for (IPositionChangeObserver observer : observers) {
+            observer.positionChanged(oldPosition, newPosition);
+        }
     }
 
-    public Vector2d getPosition(){
-        return position;
-    }
-
-    public int getEnergy(){
-        return energy;
-    }
-
-    public void setEnergy(int energy) {
-        this.energy = energy;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public String toString(){
-        return "A";
-    }
 }
