@@ -1,5 +1,5 @@
 package agh.ics.oop;
 
-public interface IGenericObserver {
+public interface IObserver {
     void update();
 }
