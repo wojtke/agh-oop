@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class SimulationEngine implements Runnable{
     private final Map map;
-    private final ArrayList<Animal> animals;
     private final ArrayList<IObserver> observers = new ArrayList<>();
 
     private final AnimalsOnMapController animalsOnMapController;
@@ -37,7 +36,7 @@ public class SimulationEngine implements Runnable{
             this.magicInterventionsLeft = 3;
         }
 
-        this.animals = new ArrayList<>();
+        ArrayList<Animal> animals = new ArrayList<>();
 
         for (int i = 0; i < starting_animals; i++) {
             Animal animal = new Animal(
@@ -50,14 +49,13 @@ public class SimulationEngine implements Runnable{
             map.putAnimal(animal, animal.getPosition());
             animals.add(animal);
         }
+
         for (int i = 0; i < starting_plants/2; i++) {
             this.map.growGrass();
         }
 
         this.stats = new Stats(map, animals);
-        this.animalsOnMapController = new AnimalsOnMapController(this.map, this.animals, stats, starting_energy, move_energy, plant_energy);
-
-
+        this.animalsOnMapController = new AnimalsOnMapController(this.map, animals, stats, starting_energy, move_energy, plant_energy);
     }
 
     public void run(){
@@ -70,7 +68,7 @@ public class SimulationEngine implements Runnable{
                 animalsOnMapController.reproduce();
                 animalsOnMapController.anotherEpochSurvived();
                 animalsOnMapController.removeDead(epoch);
-                if (animalsOnMapController.magicInterventionCheck(magicInterventionsLeft>0)) {
+                if (animalsOnMapController.magicIntervention(magicInterventionsLeft>0)) {
                     magicInterventionsLeft--;
                 }
 

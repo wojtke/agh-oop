@@ -1,6 +1,5 @@
 package agh.ics.oop.gui;
 
-import javafx.collections.ObservableList;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -12,7 +11,7 @@ public class ChartView {
     private final LineChart<Number, Number> lineChart;
     private final NumberAxis xAxis, yAxis;
 
-    private int range=100;
+    private final int range=100;
 
     private final ArrayList<ArrayList<Number>> statsArrays = new ArrayList<>();
     private final ArrayList<String> statsNames = new ArrayList<>();
@@ -82,7 +81,7 @@ public class ChartView {
         this.updateAxis(current_epoch);
     }
 
-    public void updateAxis(int current_epoch) {
+    private void updateAxis(int current_epoch) {
         this.xAxis.setLowerBound(current_epoch - (int) (0.9 * range)-1);
         this.xAxis.setUpperBound(current_epoch + (int) (0.1 * range)-1);
         this.xAxis.setTickUnit( (int)(range*0.1));

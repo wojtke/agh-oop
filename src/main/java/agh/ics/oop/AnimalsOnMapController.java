@@ -10,7 +10,8 @@ public class AnimalsOnMapController {
     private final Stats stats;
     private final int starting_energy, move_energy, plant_energy;
 
-    private Set<Vector2d> eat_positions, reproduce_positions;
+    private final Set<Vector2d> eat_positions;
+    private final Set<Vector2d> reproduce_positions;
 
     public AnimalsOnMapController(
             Map map,
@@ -102,7 +103,7 @@ public class AnimalsOnMapController {
         for (Animal animal : animals) {
             if (animal.getEnergy() <= 0) {
                 map.removeAnimal(animal, animal.getPosition());
-                stats.updateOnDeath(animal.lifespan);
+                stats.updateOnDeath(animal.getLifespan());
                 animal.notifyTrackingObserverOnDeath(epoch);
             }
         }
@@ -145,12 +146,12 @@ public class AnimalsOnMapController {
     public void anotherEpochSurvived() {
         for (Animal animal : animals) {
             animal.setEnergy(animal.getEnergy() - move_energy);
-            animal.lifespan++;
+            animal.setLifespan(animal.getLifespan() + 1);
             animal.notifyTrackingObserverNormal();
         }
     }
 
-    public boolean magicInterventionCheck(boolean magic_intervention_enabled) {
+    public boolean magicIntervention(boolean magic_intervention_enabled) {
         if (animals.size()==5 && magic_intervention_enabled) {
             for (Animal animal : animals) {
                 Animal new_animal = new Animal(

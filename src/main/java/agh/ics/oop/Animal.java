@@ -1,15 +1,13 @@
 package agh.ics.oop;
 
-import java.util.TreeMap;
-
 public class Animal implements IMapElement{
     private Vector2d position;
     private Direction direction;
     private int energy;
     private final Genom genom;
 
-    public int childrenCount=0;
-    public int lifespan=0;
+    private int childrenCount=0;
+    private int lifespan=0;
 
     private ITrackingObserver trackingObserver;
 
@@ -59,21 +57,26 @@ public class Animal implements IMapElement{
     public Vector2d getPosition(){
         return position;
     }
-
     public Genom getGenom(){
         return genom;
     }
-
     public int getEnergy(){
         return energy;
     }
-
     public void setEnergy(int energy) {
         this.energy = energy;
     }
-
     public Direction getDirection() {
         return direction;
+    }
+    public int getLifespan() {
+        return this.lifespan;
+    }
+    public void setLifespan(int lifespan) {
+        this.lifespan=lifespan;
+    }
+    public int getChildrenCount() {
+        return this.childrenCount;
     }
 
     public String toString(){

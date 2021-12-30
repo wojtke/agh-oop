@@ -1,6 +1,5 @@
 package agh.ics.oop;
 
-import java.lang.Math;
 import java.util.Objects;
 
 public class Vector2d {
@@ -22,16 +21,6 @@ public class Vector2d {
 
     public boolean follows(Vector2d other){
         return (this.x>=other.x && this.y>=other.y);
-    }
-
-    public Vector2d upperRight(Vector2d other){
-        if (other == null) return this;
-        return new Vector2d( Math.max(this.x, other.x), Math.max(this.y, other.y) );
-    }
-
-    public Vector2d lowerLeft(Vector2d other){
-        if (other == null) return this;
-        return new Vector2d( Math.min(this.x, other.x), Math.min(this.y, other.y) );
     }
 
     public Vector2d add(Vector2d other){
@@ -57,7 +46,4 @@ public class Vector2d {
         return Objects.hash(this.x, this.y);
     }
 
-    public Vector2d opposite(){
-        return new Vector2d(-this.x, -this.y);
-    }
 }

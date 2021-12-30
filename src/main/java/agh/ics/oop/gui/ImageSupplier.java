@@ -16,7 +16,7 @@ public class ImageSupplier {
     private final Image animal_tracked_img;
     private final int size;
     private final int starting_energy;
-    private Stats stats;
+    private final Stats stats;
 
     public ImageSupplier(int size, int starting_energy, Stats stats) throws FileNotFoundException {
         this.size = size;
@@ -72,7 +72,7 @@ public class ImageSupplier {
         return null;
     }
 
-    double getScale(int energy) {
+    private double getScale(int energy) {
         return 1.5/(1+Math.exp(-energy/(double)(starting_energy*2)));
     }
 }

@@ -48,10 +48,6 @@ public class Main extends Application {
 
     }
 
-    public void track(Animal animal) {
-
-    }
-
     public static void main(String[] args) {
         launch();
     }

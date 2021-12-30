@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 public class Map{
-    private final int width, height;
     protected final Vector2d lowerLeftBound, upperRightBound;
     private final Vector2d jungleLowerLeftBound, jungleUpperRightBound;
 
@@ -22,13 +21,6 @@ public class Map{
 
         this.jungleLowerLeftBound = new Vector2d((width - jungle_width)/2, (height - jungle_height)/2);
         this.jungleUpperRightBound = new Vector2d((width + jungle_width)/2-1, (height + jungle_height)/2-1);
-
-        this.width = width;
-        this.height = height;
-    }
-
-    protected boolean inBoundaries(Vector2d position) {
-        return(position.precedes(upperRightBound) && position.follows(lowerLeftBound));
     }
 
     public void putAnimal(Animal animal, Vector2d position) {
@@ -49,8 +41,9 @@ public class Map{
         }
     }
 
-    public void removePlant(Vector2d position) {
-        this.grassMap.remove(position);
+    public void move(Animal animal, Vector2d new_position) {
+        removeAnimal(animal, animal.getPosition());
+        putAnimal(animal, new_position);
     }
 
     public ArrayList<Animal> getAnimalsAt(Vector2d position) {
@@ -62,10 +55,6 @@ public class Map{
         return null;
     }
 
-    public boolean isPlantAt(Vector2d position) {
-        return this.grassMap.containsKey(position);
-    }
-
     public int getAnimalCountAt(Vector2d position) {
         if (this.animalMap.containsKey(position)) {
             return this.animalMap.get(position).size();
@@ -73,35 +62,17 @@ public class Map{
         return 0;
     }
 
+
     public int getGrassCount() {
         return this.grassMap.size();
     }
 
-    public boolean isOccupied(Vector2d position) {
-        if (this.animalMap.containsKey(position)){
-            if(this.animalMap.get(position).size() > 0) {
-                return true;
-            }
-        }
+    public boolean isPlantAt(Vector2d position) {
         return this.grassMap.containsKey(position);
     }
 
-    public boolean isInJungle(Vector2d position) {
-        return (position.precedes(jungleUpperRightBound) && position.follows(jungleLowerLeftBound));
-    }
-
-    public IMapElement objectAt(Vector2d position) {
-        if (this.animalMap.containsKey(position)) {
-            if(this.animalMap.get(position).size() > 0) {
-                return this.animalMap.get(position).stream().max(Comparator.comparingInt(Animal::getEnergy)).get();
-            }
-        }
-        return this.grassMap.getOrDefault(position, null);
-    }
-
-    public void move(Animal animal, Vector2d new_position) {
-        removeAnimal(animal, animal.getPosition());
-        putAnimal(animal, new_position);
+    public void removePlant(Vector2d position) {
+        this.grassMap.remove(position);
     }
 
     public void growGrass() {
@@ -120,14 +91,29 @@ public class Map{
         }
     }
 
-    public Vector2d moveInterpreter(Vector2d new_position) {
-        if (new_position != null) {
-            if(inBoundaries(new_position)) {
-                return new_position;
+
+    private boolean isOccupied(Vector2d position) {
+        if (this.animalMap.containsKey(position)){
+            if(this.animalMap.get(position).size() > 0) {
+                return true;
             }
         }
-        return null;
+        return this.grassMap.containsKey(position);
     }
+
+    private boolean isInJungle(Vector2d position) {
+        return (position.precedes(jungleUpperRightBound) && position.follows(jungleLowerLeftBound));
+    }
+
+    public IMapElement objectAt(Vector2d position) {
+        if (this.animalMap.containsKey(position)) {
+            if(this.animalMap.get(position).size() > 0) {
+                return this.animalMap.get(position).stream().max(Comparator.comparingInt(Animal::getEnergy)).get();
+            }
+        }
+        return this.grassMap.getOrDefault(position, null);
+    }
+
 
     public Vector2d getRandomUnoccupiedPosition(String area) {
         return switch (area) {
@@ -160,7 +146,7 @@ public class Map{
         };
     }
 
-    public Vector2d getRandomPosition(Vector2d lowerLeft, Vector2d upperRight) {
+    private Vector2d getRandomPosition(Vector2d lowerLeft, Vector2d upperRight) {
 
         int min_x = lowerLeft.x;
         int max_x = upperRight.x;
@@ -178,7 +164,21 @@ public class Map{
     public Vector2d[] getBoundaries() {
         return new Vector2d[]{lowerLeftBound, upperRightBound};
     }
+
     public Vector2d[] getJungleBoundaries() {
         return new Vector2d[]{jungleLowerLeftBound, jungleUpperRightBound};
+    }
+
+    protected boolean inBoundaries(Vector2d position) {
+        return(position.precedes(upperRightBound) && position.follows(lowerLeftBound));
+    }
+
+    public Vector2d moveInterpreter(Vector2d new_position) {
+        if (new_position != null) {
+            if(inBoundaries(new_position)) {
+                return new_position;
+            }
+        }
+        return null;
     }
 }

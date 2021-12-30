@@ -1,8 +1,6 @@
 package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -22,7 +20,6 @@ import java.util.ArrayList;
 public class MapView {
     private GridPane grid;
     private Map map;
-    private Tracker tracker;
     private ImageSupplier imgs;
 
     private final ArrayList<Node> nodes = new ArrayList<>();
@@ -33,7 +30,6 @@ public class MapView {
             this.imgs = new ImageSupplier(grid_size, starting_energy, engine.getStats());
 
             this.map = engine.getMap();
-            this.tracker = tracker;
 
             this.grid = new GridPane();
 
@@ -51,7 +47,7 @@ public class MapView {
         return grid;
     }
 
-    public void drawBackground(GridPane grid, Map map, int grid_size) {
+    private void drawBackground(GridPane grid, Map map, int grid_size) {
         grid.setAlignment(Pos.CENTER);
         grid.setBackground(getBackground(Color.SEAGREEN, 0.0));
 
@@ -78,7 +74,7 @@ public class MapView {
         }
     }
 
-    public Background getBackground(Color color, double randomness) {
+    private Background getBackground(Color color, double randomness) {
         double factor = (Math.random()*(randomness)) + 1-randomness/2;
         color = color.deriveColor(1, 1, factor, 1);
 

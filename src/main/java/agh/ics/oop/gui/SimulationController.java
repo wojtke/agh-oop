@@ -2,18 +2,10 @@ package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class SimulationController implements IObserver {
@@ -87,7 +79,7 @@ public class SimulationController implements IObserver {
         }
     }
 
-    public void updateCurrentStats(int epoch) {
+    private void updateCurrentStats(int epoch) {
         this.epochLabel.setText("Epoch: " + epoch);
         this.animalCountLabel.setText("Animals: " + stats.current_animal_count);
         this.grassCountLabel.setText("Grass: " + stats.current_grass_count);
@@ -109,7 +101,7 @@ public class SimulationController implements IObserver {
         pauseSimulation(!engine.isPaused());
     }
 
-    public void pauseSimulation(boolean pause) {
+    private void pauseSimulation(boolean pause) {
         engine.pauseSimulation(pause);
         this.simulationPauseButton.setText(pause ? "Resume" : "Pause");
     }
@@ -120,7 +112,7 @@ public class SimulationController implements IObserver {
         pauseSimulation(false);
     }
 
-    public void initCharts() {
+    private void initCharts() {
         this.countChart = new ChartView(stats.getAnimalCount(), stats.getGrassCount(), "Animals", "Grass");
         this.countChartPane.getChildren().add(countChart.getView());
 

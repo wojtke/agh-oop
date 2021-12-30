@@ -67,7 +67,7 @@ public class TrackerController implements ITrackingObserver {
     public void updateNormal(Animal animal) {
         if (animal == trackedAnimal) {
             Platform.runLater(() -> {
-                this.ageLabel.setText("Age: " + animal.lifespan);
+                this.ageLabel.setText("Age: " + animal.getLifespan());
                 this.energyLabel.setText("Energy: " + animal.getEnergy());
             });
         }

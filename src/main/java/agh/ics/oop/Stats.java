@@ -2,15 +2,11 @@ package agh.ics.oop;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Stream;
 
-import static org.junit.Assert.assertTrue;
 
 public class Stats {
     private final Map map;
@@ -120,7 +116,7 @@ public class Stats {
     private void updateAvgChildren() {
         int children_sum = 0;
         for (Animal animal : animals) {
-            children_sum += animal.childrenCount;
+            children_sum += animal.getChildrenCount();
         }
         if (current_animal_count.intValue() > 0) {
             current_animal_avg_children = children_sum/current_animal_count.doubleValue();
