@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Map{
     private final int width, height;
-    private final Vector2d lowerLeftBound, upperRightBound;
+    protected final Vector2d lowerLeftBound, upperRightBound;
     private final Vector2d jungleLowerLeftBound, jungleUpperRightBound;
 
     private final HashMap<Vector2d, ArrayList<Animal>> animalMap = new HashMap<>();
@@ -27,7 +27,7 @@ public class Map{
         this.height = height;
     }
 
-    private boolean inBoundaries(Vector2d position) {
+    protected boolean inBoundaries(Vector2d position) {
         return(position.precedes(upperRightBound) && position.follows(lowerLeftBound));
     }
 
@@ -161,16 +161,12 @@ public class Map{
     }
 
     public Vector2d getRandomPosition(Vector2d lowerLeft, Vector2d upperRight) {
-        if (upperRight.precedes(lowerLeft)) {
-            throw new IllegalArgumentException("Upper right position is smaller than lower left position");
-        }
 
         int min_x = lowerLeft.x;
         int max_x = upperRight.x;
         int min_y = lowerLeft.y;
         int max_y = upperRight.y;
 
-        //TODO not sure if its correct
 
         return new Vector2d(
                 (int) (Math.random()*(1+max_x-min_x)) + min_x,

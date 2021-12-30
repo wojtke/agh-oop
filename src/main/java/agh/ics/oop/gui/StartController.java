@@ -5,6 +5,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 
 import java.util.HashMap;
 
@@ -19,18 +20,23 @@ public class StartController {
     @FXML
     private TextField starting_energy_field, move_energy_field, plant_energy_field;
 
+    @FXML
+    private ToggleButton rightMagicButton, leftMagicButton;
+
 
     @FXML
     protected void onStartClick() {
-        System.out.println("Start clicked");
-
         if(validate()) {
             initializeParams();
         } else {
             System.out.println("Sth went wrong wit the params");
-            //TODO show error
         }
 
+    }
+
+    public void toggleButton() {
+        rightMagicButton.setText( (rightMagicButton.isSelected() ? "Yes" : "No"));
+        leftMagicButton.setText( (leftMagicButton.isSelected() ? "Yes" : "No"));
     }
 
     private boolean validate() {
@@ -70,6 +76,9 @@ public class StartController {
         params.put("starting_energy", Integer.parseInt(starting_energy_field.getText()));
         params.put("move_energy", Integer.parseInt(move_energy_field.getText()));
         params.put("plant_energy", Integer.parseInt(plant_energy_field.getText()));
+
+        params.put("left_magic", (leftMagicButton.isSelected() ? 1 : 0));
+        params.put("right_magic",(rightMagicButton.isSelected() ? 1 :0));
 
         this.params.set(params);
     }

@@ -1,10 +1,17 @@
 package agh.ics.oop;
 
+import java.util.TreeMap;
+
 public class Animal implements IMapElement{
     private Vector2d position;
     private Direction direction;
     private int energy;
     private final Genom genom;
+
+    public int childrenCount=0;
+    public int lifespan=0;
+
+    private ITrackingObserver trackingObserver;
 
     public Animal(Vector2d position, Direction direction, int energy, Genom genom){
         this.position = position;
@@ -38,11 +45,23 @@ public class Animal implements IMapElement{
         this.energy -= (int) ((double)this.energy*0.25);
         other.energy -= (int) ((double)other.energy*0.25);
 
-        return new Animal(this.position, Direction.random(), child_energy, child_genom);
+        this.childrenCount++;
+        other.childrenCount++;
+
+        Animal child =  new Animal(this.position, Direction.random(), child_energy, child_genom);
+
+        notifyTrackingObserverOnReproduce(child);
+
+        return child;
     }
+
 
     public Vector2d getPosition(){
         return position;
+    }
+
+    public Genom getGenom(){
+        return genom;
     }
 
     public int getEnergy(){
@@ -59,5 +78,36 @@ public class Animal implements IMapElement{
 
     public String toString(){
         return "A";
+    }
+
+    public boolean isTracked() {
+        if (trackingObserver != null) {
+            return trackingObserver.isTracked(this);
+        }
+        return false;
+    }
+
+    public void addTrackingObserver(ITrackingObserver trackingObserver){
+        this.trackingObserver = trackingObserver;
+    }
+
+    public void removeTrackingObserver(){
+        this.trackingObserver = null;
+    }
+
+    public void notifyTrackingObserverOnReproduce(Animal child){
+        if(trackingObserver != null){
+            trackingObserver.updateOnReproduce(this, child);
+        }
+    }
+    public void notifyTrackingObserverOnDeath(int epoch){
+        if(trackingObserver != null){
+            trackingObserver.updateOnDeath(this, epoch);
+        }
+    }
+    public void notifyTrackingObserverNormal(){
+        if(trackingObserver != null){
+            trackingObserver.updateNormal(this);
+        }
     }
 }

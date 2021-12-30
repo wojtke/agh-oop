@@ -7,6 +7,7 @@ import java.util.Set;
 public class AnimalsOnMapController {
     private final Map map;
     private final ArrayList<Animal> animals;
+    private final Stats stats;
     private final int starting_energy, move_energy, plant_energy;
 
     private Set<Vector2d> eat_positions, reproduce_positions;
@@ -14,12 +15,14 @@ public class AnimalsOnMapController {
     public AnimalsOnMapController(
             Map map,
             ArrayList<Animal> animals,
+            Stats stats,
             int starting_energy,
             int move_energy,
             int plant_energy
     ) {
         this.map = map;
         this.animals = animals;
+        this.stats = stats;
 
         this.starting_energy = starting_energy;
         this.move_energy = move_energy;
@@ -91,16 +94,16 @@ public class AnimalsOnMapController {
                     reproduce_positions.add(new_positon);
                 }
             }
-
-            animal.setEnergy(animal.getEnergy() - move_energy);
         }
 
     }
 
-    public void removeDead() {
+    public void removeDead(int epoch) {
         for (Animal animal : animals) {
             if (animal.getEnergy() <= 0) {
                 map.removeAnimal(animal, animal.getPosition());
+                stats.updateOnDeath(animal.lifespan);
+                animal.notifyTrackingObserverOnDeath(epoch);
             }
         }
         animals.removeIf(animal -> animal.getEnergy() <= 0);
@@ -139,8 +142,27 @@ public class AnimalsOnMapController {
         reproduce_positions.clear();
     }
 
+    public void anotherEpochSurvived() {
+        for (Animal animal : animals) {
+            animal.setEnergy(animal.getEnergy() - move_energy);
+            animal.lifespan++;
+            animal.notifyTrackingObserverNormal();
+        }
+    }
 
-
-
+    public boolean magicInterventionCheck(boolean magic_intervention_enabled) {
+        if (animals.size()==5 && magic_intervention_enabled) {
+            for (Animal animal : animals) {
+                Animal new_animal = new Animal(
+                        map.getRandomUnoccupiedPosition("map"),
+                        Direction.random(),
+                        starting_energy,
+                        animal.getGenom());
+                map.putAnimal(new_animal, new_animal.getPosition());
+            }
+            return true;
+        }
+        return false;
+    }
 
 }

@@ -9,7 +9,9 @@ public class SimulationEngine implements Runnable{
 
     private final AnimalsOnMapController animalsOnMapController;
     private final Stats stats;
-    private int simulationSpeed = 200;
+    private int simulationSpeed = 250;
+    private boolean isPaused = false;
+    private int magicInterventionsLeft = 0;
 
     public SimulationEngine(
             int map_width,
@@ -20,15 +22,20 @@ public class SimulationEngine implements Runnable{
             int starting_plants,
             int starting_energy,
             int move_energy,
-            int plant_energy
+            int plant_energy,
+            boolean isWrappy,
+            boolean isMagic
     ) {
 
-        this.map = new Map(
-                map_width,
-                map_height,
-                jungle_width,
-                jungle_height
-        );
+        if (isWrappy) {
+            this.map = new MapWrappy(map_width, map_height, jungle_width, jungle_height);
+        } else{
+            this.map = new Map(map_width, map_height, jungle_width, jungle_height);
+        }
+
+        if (isMagic) {
+            this.magicInterventionsLeft = 3;
+        }
 
         this.animals = new ArrayList<>();
 
@@ -47,8 +54,9 @@ public class SimulationEngine implements Runnable{
             this.map.growGrass();
         }
 
-        this.animalsOnMapController = new AnimalsOnMapController(this.map, this.animals, starting_energy, move_energy, plant_energy);
         this.stats = new Stats(map, animals);
+        this.animalsOnMapController = new AnimalsOnMapController(this.map, this.animals, stats, starting_energy, move_energy, plant_energy);
+
 
     }
 
@@ -60,16 +68,24 @@ public class SimulationEngine implements Runnable{
                 animalsOnMapController.move();
                 animalsOnMapController.eat();
                 animalsOnMapController.reproduce();
-                animalsOnMapController.removeDead();
+                animalsOnMapController.anotherEpochSurvived();
+                animalsOnMapController.removeDead(epoch);
+                if (animalsOnMapController.magicInterventionCheck(magicInterventionsLeft>0)) {
+                    magicInterventionsLeft--;
+                }
 
                 map.growGrass();
 
                 stats.update(epoch);
                 epoch++;
 
-                updateObservers();
+                updateObservers(epoch);
 
                 Thread.sleep(this.simulationSpeed);
+
+                while (isPaused) {
+                    Thread.sleep(100);
+                }
             }
 
         }  catch (InterruptedException e) {
@@ -81,9 +97,9 @@ public class SimulationEngine implements Runnable{
         this.observers.add(observer);
     }
 
-    private void updateObservers() {
+    private void updateObservers(int epoch) {
         for (IObserver observer: this.observers) {
-            observer.update();
+            observer.update(epoch);
         }
     }
 
@@ -97,6 +113,15 @@ public class SimulationEngine implements Runnable{
 
     public void setSimulationSpeed(int speed) {
         this.simulationSpeed = speed;
+    }
+
+    public boolean pauseSimulation(boolean isPaused) {
+        this.isPaused = isPaused;
+        return isPaused;
+    }
+
+    public boolean isPaused() {
+        return this.isPaused;
     }
 
 }

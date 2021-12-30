@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Genom {
@@ -65,4 +66,29 @@ public class Genom {
         return genom[(int) (Math.random() * 32)];
     }
 
+    public int[] getGenes() {
+        return genom;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Genom genom1 = (Genom) o;
+        return Arrays.equals(genom, genom1.genom);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(genom);
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.stream(genom).sequential().mapToObj(String::valueOf).reduce((a, b) -> a + b).get();
+    }
+
+    public static ArrayList<String> getNames() {
+        return new ArrayList<>(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7"));
+    }
 }

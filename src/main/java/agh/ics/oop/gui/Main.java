@@ -1,5 +1,6 @@
 package agh.ics.oop.gui;
 
+import agh.ics.oop.Animal;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -33,16 +34,22 @@ public class Main extends Application {
     }
 
     public void simulate(HashMap<String, Integer> params) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("simulation-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("split-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         stage.setTitle("Simulation!");
+        stage.setX(50);
+        stage.setY(50);
         stage.setScene(scene);
         stage.show();
 
-        SimulationController controller = fxmlLoader.getController();
+        SplitController controller = fxmlLoader.getController();
+        controller.startSimulations(params);
 
-        controller.startSimulation(params);
+    }
+
+    public void track(Animal animal) {
+
     }
 
     public static void main(String[] args) {

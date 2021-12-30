@@ -1,5 +1,5 @@
 package agh.ics.oop;
 
 public interface IObserver {
-    void update();
+    void update(int n);
 }
